@@ -1183,10 +1183,7 @@ int QtStyleCodeFormatter::loadLexerState(const QTextBlock &block) const
 
 void QtStyleCodeFormatter::addContinuationIndent(int *paddingDepth) const
 {
-    if (*paddingDepth == 0)
-        *paddingDepth = 2*m_tabSettings.m_indentSize;
-    else
-        *paddingDepth += m_tabSettings.m_indentSize;
+    *paddingDepth += m_tabSettings.m_indentSize;
 }
 
 void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedIndentDepth, int *paddingDepth, int *savedPaddingDepth) const
@@ -1219,7 +1216,7 @@ void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedInd
             *savedIndentDepth = tokenPosition;
             *indentDepth = tokenPosition;
         }
-        *paddingDepth = 2*m_tabSettings.m_indentSize;
+        *paddingDepth = m_tabSettings.m_indentSize;
         break;
 
     case template_param:
@@ -1236,7 +1233,7 @@ void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedInd
     case return_statement:
         if (firstToken)
             *indentDepth = *savedIndentDepth = tokenPosition;
-        *paddingDepth = 2*m_tabSettings.m_indentSize;
+        *paddingDepth = m_tabSettings.m_indentSize;
         break;
 
     case declaration_start:
@@ -1248,7 +1245,7 @@ void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedInd
         // after the return type in "void\nfoo() {}"
         for (int i = 0; state(i).type != topmost_intro; ++i) {
             if (state(i).type == defun_open) {
-                *paddingDepth = 2*m_tabSettings.m_indentSize;
+                *paddingDepth = m_tabSettings.m_indentSize;
                 break;
             }
         }
@@ -1262,7 +1259,7 @@ void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedInd
         if (!lastToken && m_styleSettings.alignAssignments)
             *paddingDepth = nextTokenPosition-*indentDepth;
         else
-            *paddingDepth = 2*m_tabSettings.m_indentSize;
+            *paddingDepth = m_tabSettings.m_indentSize;
         break;
 
     case arglist_open:
@@ -1404,7 +1401,7 @@ void QtStyleCodeFormatter::onEnter(int newState, int *indentDepth, int *savedInd
         // fixed extra indent when continuing 'if (', but not for 'else if ('
         if (m_styleSettings.extraPaddingForConditionsIfConfusingAlign
                 && nextTokenPosition-*indentDepth <= m_tabSettings.m_indentSize)
-            *paddingDepth = 2*m_tabSettings.m_indentSize;
+            *paddingDepth = m_tabSettings.m_indentSize;
         else
             *paddingDepth = nextTokenPosition-*indentDepth;
         break;
